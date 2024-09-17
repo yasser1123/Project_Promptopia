@@ -3,6 +3,8 @@ const nextConfig = {
     experimental: {
       appDir: true, // Enable the app directory (new file-based routing).
       serverComponentsExternalPackages: ["mongoose"], // Ensures "mongoose" can be used in server components.
+      missingSuspenseWithCSRBailout: false,
+
     },
     images: {
       domains: ['lh3.googleusercontent.com'], // Allows Next.js to load images from Google (e.g., for OAuth profile pictures).
@@ -14,6 +16,7 @@ const nextConfig = {
       };
       return config;
     },
+    
   };
   
   module.exports = nextConfig; // Export the configuration for Next.js to use.
