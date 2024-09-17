@@ -54,10 +54,7 @@ const Update = () => {
       setIsSubmitting(false);
     }
   };
-};
 
-export default updatePrompt() {
-  
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Form
@@ -65,10 +62,10 @@ export default updatePrompt() {
         post={post}
         setPost={setPost}
         submitting={submitting}
-        handleSubmit={Update}
+        handleSubmit={updatePrompt}
       />
     </Suspense>
   );
-}
+};
 
-
+export default Update;
