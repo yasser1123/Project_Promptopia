@@ -23,13 +23,20 @@ const Feed = () => {
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
+  // Fetch posts from the API
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/prompt");
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
-      }
+      const response = await fetch("/api/prompt", {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-store' // Prevent client-side caching as well
+        }
+      });
       const data = await response.json();
+
+      // Log the fetched data to check if new posts are coming in
+      console.log("Fetched Posts:", data);
+
       setAllPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -37,11 +44,12 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(); // Refetch posts whenever the component is mounted
   }, []);
 
-  const filterPrompts = (searchtext) => {
-    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+  // Filter prompts based on search text
+  const filterPrompts = (searchText) => {
+    const regex = new RegExp(searchText, "i");
     return allPosts.filter(
       (item) =>
         regex.test(item.creator.username) ||
@@ -50,11 +58,11 @@ const Feed = () => {
     );
   };
 
+  // Handle search input change
   const handleSearchChange = (e) => {
     clearTimeout(searchTimeout);
     setSearchText(e.target.value);
 
-    // debounce method
     setSearchTimeout(
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);
@@ -63,32 +71,29 @@ const Feed = () => {
     );
   };
 
+  // Handle tag click for filtering
   const handleTagClick = (tagName) => {
     setSearchText(tagName);
-
     const searchResult = filterPrompts(tagName);
     setSearchedResults(searchResult);
   };
 
   return (
-    <section className='feed'>
-      <form className='relative w-full flex-center'>
+    <section className="feed">
+      <form className="relative w-full flex-center">
         <input
-          type='text'
-          placeholder='Search for a tag or a username'
+          type="text"
+          placeholder="Search for a tag or a username"
           value={searchText}
           onChange={handleSearchChange}
           required
-          className='search_input peer'
+          className="search_input peer"
         />
       </form>
 
-      {/* All Prompts */}
+      {/* Display all or filtered prompts */}
       {searchText ? (
-        <PromptCardList
-          data={searchedResults}
-          handleTagClick={handleTagClick}
-        />
+        <PromptCardList data={searchedResults} handleTagClick={handleTagClick} />
       ) : (
         <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
       )}
