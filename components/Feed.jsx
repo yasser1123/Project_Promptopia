@@ -102,3 +102,5 @@ const Feed = () => {
 };
 
 export default Feed;
+
+export const dynamic = 'force-dynamic';
