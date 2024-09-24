@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-      appDir: true, // Enable the app directory (new file-based routing).
       serverComponentsExternalPackages: ["mongoose"], // Ensures "mongoose" can be used in server components.
       missingSuspenseWithCSRBailout: false,
 

@@ -45,7 +45,7 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPosts(); // Refetch posts whenever the component is mounted
-  }, []);
+  }, );
 
   // Filter prompts based on search text
   const filterPrompts = (searchText) => {
