@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
+import usePosts from "../hooks/usePosts"; // Import your custom hook
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -18,34 +19,10 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const [allPosts, setAllPosts] = useState([]);
+  const { allPosts, loading, error, refetchPosts } = usePosts(); // Use the hook
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
-
-  // Fetch posts from the API
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch("/api/prompt", {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-store' // Prevent client-side caching as well
-        }
-      });
-      const data = await response.json();
-
-      // Log the fetched data to check if new posts are coming in
-      console.log("Fetched Posts:", data);
-
-      setAllPosts(data);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts(); // Refetch posts whenever the component is mounted
-  }, );
 
   // Filter prompts based on search text
   const filterPrompts = (searchText) => {
@@ -78,6 +55,16 @@ const Feed = () => {
     setSearchedResults(searchResult);
   };
 
+  // Simulate post creation and trigger refetch
+  const handleCreatePost = async () => {
+    // Simulate creating a post
+    await fetch("/api/prompt", { method: "POST", body: JSON.stringify({ prompt: "New Post" }) });
+    refetchPosts(); // Refetch posts after creating a new one
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
@@ -97,6 +84,9 @@ const Feed = () => {
       ) : (
         <PromptCardList data={allPosts} handleTagClick={handleTagClick} />
       )}
+
+      {/* Button to simulate post creation and trigger refetch */}
+      <button onClick={handleCreatePost}>Create Post</button>
     </section>
   );
 };
